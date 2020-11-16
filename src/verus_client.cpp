@@ -27,6 +27,7 @@
 int len_inet;                // length
 int s,err;
 
+char* file_name;
 char* port;
 char* srvr_addr;
 unsigned int delay = 0;
@@ -155,8 +156,8 @@ int main(int argc,char **argv) {
 
   pthread_mutex_init(&lockSendingList, NULL);
 
-  if (argc < 4) {
-    std::cout << "syntax should be ./verus_client <server address> -p <server port> [-d <additional link delay in ms>] \n";
+  if (argc < 6) {
+    std::cout << "syntax should be ./verus_client <server address> -p <server port> -f <file name> [-d <additional link delay in ms>] \n";
     exit(0);
   }
 
@@ -170,8 +171,11 @@ int main(int argc,char **argv) {
     } else if (!strcmp (argv[i], "-d")) {
       i=i+1;
       delay = atoi(argv[i]);
-    }else {
-      std::cout << "syntax should be ./verus_client <server address> -p <server port> [-d <additional link delay in ms>] \n";
+    } else if (!strcmp (argv[i], "-f")) {
+      i=i+1;
+      file_name = argv[i];
+    } else {
+      std::cout << "syntax should be ./verus_client <server address> -p <server port> f <file name> [-d <additional link delay in ms>] \n";
       exit(0);
     }
   }
@@ -223,7 +227,7 @@ int main(int argc,char **argv) {
 
     // stopping the io timer for the timeout
     if (!receivedPkt) {
-      sprintf (command, "client_%s.out", port);
+      sprintf (command, "%s_client.out", file_name);
       clientLog.open(command);
       receivedPkt = true;
       io.stop();

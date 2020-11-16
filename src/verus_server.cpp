@@ -55,6 +55,7 @@ bool lossPhase = false;
 
 char command[512];
 char *name;
+char *file_name;
 
 pthread_mutex_t lockSendingList;
 pthread_mutex_t lockSPline;
@@ -635,9 +636,9 @@ void* receiver_thread (void *arg)
 
     len_inet = sizeof(struct sockaddr_in);
 
-    sprintf (command, "%s/Losses.out", name);
+    sprintf (command, "%s/%s_Losses.out", name, file_name);
     lossLog.open(command);
-    sprintf (command, "%s/Receiver.out", name);
+    sprintf (command, "%s/%s_Receiver.out", name, file_name);
     receiverLog.open(command);
 
     pdu = (udp_packet_t *) malloc(sizeof(udp_packet_t));
@@ -764,8 +765,8 @@ int main(int argc,char **argv) {
     for (int j=0; j<MAX_W_DELAY_CURVE; j++)
         wList[j]=-1;
 
-    if (argc < 7) {
-        std::cout << "syntax should be ./verus_server -name NAME -p PORT -t TIME (sec) \n";
+    if (argc < 9) {
+        std::cout << "syntax should be ./verus_server -name NAME -f filename -p PORT -t TIME (sec) \n";
         exit(0);
     }
 
@@ -774,6 +775,10 @@ int main(int argc,char **argv) {
         if (!strcmp (argv[i], "-name")) {
             i=i+1;
             name = argv[i];
+            }
+        else if (!strcmp (argv[i], "-f")) {
+            i=i+1;
+            file_name = argv[i];
             }
         else if (!strcmp (argv[i], "-p")) {
             i=i+1;
@@ -784,7 +789,7 @@ int main(int argc,char **argv) {
             timeToRun = std::stod(argv[i]);
             }
         else {
-            std::cout << "syntax should be ./verus_server -name NAME -p PORT -t TIME (sec) \n";
+            std::cout << "syntax should be ./verus_server -name NAME -f filename -p PORT -t TIME (sec) \n";
             exit(0);
         }
     }
@@ -816,7 +821,7 @@ int main(int argc,char **argv) {
         sprintf (command, "exec mkdir %s", name);
         system(command);
     }
-    sprintf (command, "%s/Verus.out", name);
+    sprintf (command, "%s/%s_Verus.out", name, file_name);
     verusLog.open(command);
 
     // getting the start time of the program, to make relative timestamps
