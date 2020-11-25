@@ -134,6 +134,17 @@ void write2Log (std::ofstream &logFile, std::string arg1, std::string arg2, std:
     return;
 }
 
+void headerRecvLog(std::ofstream &logFile) {
+    logFile << "time seq.no, delay, wcrt, wbar\n";
+}
+
+void headerLossLog(std::ofstream &logFile) {
+    logFile << "time, error, reason/seq.no, seq.last/wcrt\n";
+}
+void headerVerusLog(std::ofstream &logFile) {
+    logFile << "time, delayEst, delayMin, wcrt, wbar, tempS\n";
+}
+
 double ewma (double vals, double delay, double alpha) {
     double avg;
 
@@ -638,8 +649,10 @@ void* receiver_thread (void *arg)
 
     sprintf (command, "%s/%s_Losses.out", name, file_name);
     lossLog.open(command);
+    headerLossLog(lossLog);
     sprintf (command, "%s/%s_Receiver.out", name, file_name);
     receiverLog.open(command);
+    headerRecvLog(receiverLog);
 
     pdu = (udp_packet_t *) malloc(sizeof(udp_packet_t));
 
@@ -823,6 +836,7 @@ int main(int argc,char **argv) {
     }
     sprintf (command, "%s/%s_Verus.out", name, file_name);
     verusLog.open(command);
+    headerVerusLog(verusLog);
 
     // getting the start time of the program, to make relative timestamps
     gettimeofday(&startTime,NULL);
