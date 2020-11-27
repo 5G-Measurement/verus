@@ -135,7 +135,7 @@ void write2Log (std::ofstream &logFile, std::string arg1, std::string arg2, std:
 }
 
 void headerRecvLog(std::ofstream &logFile) {
-    logFile << "time seq.no, delay, wcrt, wbar\n";
+    logFile << "time, seq.no, delay, wcrt, wbar\n";
 }
 
 void headerLossLog(std::ofstream &logFile) {
@@ -647,10 +647,10 @@ void* receiver_thread (void *arg)
 
     len_inet = sizeof(struct sockaddr_in);
 
-    sprintf (command, "%s/%s_Losses.out", name, file_name);
+    sprintf (command, "%s/%s_Losses.csv", name, file_name);
     lossLog.open(command);
     headerLossLog(lossLog);
-    sprintf (command, "%s/%s_Receiver.out", name, file_name);
+    sprintf (command, "%s/%s_Receiver.csv", name, file_name);
     receiverLog.open(command);
     headerRecvLog(receiverLog);
 
@@ -834,7 +834,7 @@ int main(int argc,char **argv) {
         sprintf (command, "exec mkdir %s", name);
         system(command);
     }
-    sprintf (command, "%s/%s_Verus.out", name, file_name);
+    sprintf (command, "%s/%s_Verus.csv", name, file_name);
     verusLog.open(command);
     headerVerusLog(verusLog);
 

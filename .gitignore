@@ -14,3 +14,4 @@ Makefile.in
 /depcomp
 /stamp-h1
 /build-aux
+.vscode

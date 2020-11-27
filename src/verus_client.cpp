@@ -54,6 +54,10 @@ pthread_mutex_t lockSendingList;
 boost::asio::io_service io;
 boost::asio::deadline_timer timer (io, boost::posix_time::milliseconds(SS_INIT_TIMEOUT));
 
+void headerClientLog(std::ofstream &logFile) {
+    logFile << "time, seq.no\n";
+}
+
 static void displayError(const char *on_what) {
   fputs(strerror(errno),stderr);
   fputs(": ",stderr);
@@ -227,7 +231,7 @@ int main(int argc,char **argv) {
 
     // stopping the io timer for the timeout
     if (!receivedPkt) {
-      sprintf (command, "%s_client.out", file_name);
+      sprintf (command, "%s_client.csv", file_name);
       clientLog.open(command);
       receivedPkt = true;
       io.stop();
